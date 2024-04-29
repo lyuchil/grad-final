@@ -6,7 +6,7 @@ In this project, we created a military spending timeline for different countires
 
 ## Website
 
-(To be updated after we organize and add everything from the other repo)
+https://lyuchil.github.io/grad-final/
 
 ## Screen Cast
 
@@ -14,7 +14,7 @@ https://youtu.be/tPOfx_W3Pfs
 
 ## Processbook
 
-(Link to process book to be added)
+https://github.com/lyuchil/grad-final/blob/main/CS_539_Final_Project_Process_Book.pdf
 
 ### File Breakdown
 
