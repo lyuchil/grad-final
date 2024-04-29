@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Military Spending Timeline</title>
+    <link rel="stylesheet" href="index.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      title="timeline-styles"
+      rel="stylesheet"
+      href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css"
+    />
+    <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="timeline"></div>
+      <iframe
+        id="graph-iframe"
+        src="d3graph/graph.html"
+        frameborder="0"
+      ></iframe>
+    </div>
+
+    <script>
+      var events = [
+        {
+          startYear: 1961,
+          endYear: 1961,
+          graphStartYear: 1960,
+          graphEndYear: 1992,
+          Name: "Berlin Wall",
+          Description:
+            "The Berlin Wall was constructed to prevent people from escaping East Berlin, which was under Soviet control.",
+          countries: ["United States", "Germany", "United Kingdom", "France"],
+        },
+        {
+          startYear: 1962,
+          endYear: 1962,
+          graphStartYear: 1960,
+          graphEndYear: 1970,
+          Name: "Cuban Missile Crisis",
+          Description:
+            "The Cuban Missile Crisis nearly escalated to war between the U.S. and the Soviet Union due to Soviet nuclear-armed ballistic missiles stationed in Cuba.",
+          countries: ["United States", "Cuba"],
+        },
+        {
+          startYear: 1963,
+          endYear: 1963,
+          graphStartYear: 1960,
+          graphEndYear: 1965,
+          Name: "JFK Assasination",
+          Description:
+            "John F. Kennedy was assassinated while campaigning in a parade in Texas.",
+          countries: ["United States"],
+        },
+        // {
+        //   startYear: 1963,
+        //   endYear: 1963,
+        //   graphStartYear: 1963,
+        //   graphEndYear: 1975,
+        //   Name: "Kenya Independence",
+        //   Description:
+        //     "Following the Mau Mau Uprising, Great Britain began losing control and eventually negotiated independence as the empire struggled to maintain itself.",
+        //   countries: ["United Kingdom"],
+        // },
+        {
+          startYear: 1964,
+          endYear: 1964,
+          graphStartYear: 1960,
+          graphEndYear: 1970,
+          Name: "Brazil Coup D'État",
+          Description:
+            "This event was a military coup that overthrew the Brazilian president and initiated a military dictatorship lasting until 1985.",
+          countries: ["Brazil"],
+        },
+        {
+          startYear: 1964,
+          endYear: 1972,
+          graphStartYear: 1960,
+          graphEndYear: 1975,
+          Name: "A Free Zimbabwe",
+          Description:
+            "Backed by communist countries, the Zimbabwe African People's Union and Zimbabwe African National Union began guerrilla operations, sparking a civil war.",
+          countries: ["Zimbabwe", "United Kingdom"],
+        },
+        {
+          startYear: 1965,
+          endYear: 1965,
+          graphStartYear: 1960,
+          graphEndYear: 1970,
+          Name: "India-Pakistan War",
+          Description:
+            "This was the second war between India and Pakistan over the status of Jammu and Kashmir, and the conflict failed to resolve the dispute.",
+          countries: ["India", "Pakistan", "United States"],
+        },
+        {
+          startYear: 1967,
+          endYear: 1967,
+          graphStartYear: 1960,
+          graphEndYear: 1970,
+          Name: "6 Days War",
+          Description:
+            "This war transformed the Middle East as Israel defeated three Arab armies and emerged as the region's dominant military power.",
+          countries: ["Jordan", "Israel", "Egypt", "Syria"],
+        },
+        {
+          startYear: 1967,
+          endYear: 1970,
+          graphStartYear: 1960,
+          graphEndYear: 1975,
+          Name: "Nigerian Civil War",
+          Description:
+            "The war began after a region declared itself the independent Republic of Biafra.",
+          countries: ["Nigeria", "Egypt"],
+        },
+        {
+          startYear: 1972,
+          endYear: 1972,
+          graphStartYear: 1970,
+          graphEndYear: 1980,
+          Name: "ABM Treaty & SALT I",
+          Description:
+            "As the Cold War intensified tensions between the U.S. and the Soviet Union, both nations agreed to sign treaties limiting the number of nuclear missiles in their arsenals.",
+          countries: ["United States"],
+        },
+        {
+          startYear: 1973,
+          endYear: 1974,
+          graphStartYear: 1970,
+          graphEndYear: 1980,
+          Name: "First Oil Crisis",
+          Description:
+            "Starting with Saudi Arabia, major oil-exporting countries decided to place an embargo on nations that supported Israel during the Yom Kippur War in October.",
+          countries: [
+            "Israel",
+            "Egypt",
+            "Syria",
+            "United States",
+            "Canada",
+            "Japan",
+            "Netherlands",
+          ],
+        },
+        // {
+        //   startYear: 1972,
+        //   endYear: 1972,
+        //   graphStartYear: 1970,
+        //   graphEndYear: 2000,
+        //   Name: "U.S. China Diplomacy",
+        //   Description:
+        //     "Nixon visited China to gain leverage over the Soviet Union, officially established diplomatic relations with the People's Republic of China, and ended support for Taiwan.",
+        //   countries: ["United States"],
+        // },
+        {
+          startYear: 1979,
+          endYear: 1979,
+          graphStartYear: 1975,
+          graphEndYear: 1985,
+          Name: "Iranian Revolution",
+          Description:
+            "The Iranian Revolution overthrew the Imperial State of Iran and established the Islamic Republic of Iran with a theocratic government.",
+          countries: ["Iran"],
+        },
+        {
+          startYear: 1980,
+          endYear: 1980,
+          graphStartYear: 1975,
+          graphEndYear: 1990,
+          Name: "U.S. Aid to Pakistan",
+          Description:
+            "The U.S. provided aid to Pakistan in response to the Soviet Union's involvement in Afghanistan.",
+          countries: ["United States", "Pakistan"],
+        },
+        {
+          startYear: 1982,
+          endYear: 1985,
+          graphStartYear: 1975,
+          graphEndYear: 1990,
+          Name: "Lebanon War",
+          Description:
+            "The war began when Israel invaded southern Lebanon, a conflict driven by divisions over support for or opposition to Palestinian resistance operations against Israel.",
+          countries: ["Lebanon", "Israel", "Syria"],
+        },
+        {
+          startYear: 1982,
+          endYear: 1983,
+          graphStartYear: 1980,
+          graphEndYear: 1990,
+          Name: "U.S. Invades Grenada",
+          Description:
+            "The U.S. invaded Grenada to protect American students and diminish Cuban influence on the island.",
+          countries: ["United States"],
+        },
+        {
+          startYear: 1983,
+          endYear: 2009,
+          graphStartYear: 1983,
+          graphEndYear: 2009,
+          Name: "Sri Lanka Civil War",
+          Description:
+            "The civil war started due to conflicts between majority and minority ethnic groups, with significant involvement from India in the modern conflict.",
+          countries: ["Sri Lanka", "India"],
+        },
+        {
+          startYear: 1987,
+          endYear: 1987,
+          graphStartYear: 1985,
+          graphEndYear: 2000,
+          Name: "Taiwan Martial Law",
+          Description:
+            "Following the Chinese Civil War, Taiwan entered a period of 'White Terror,' marked by strict enforcement of martial law, which eventually led to the nation's transition toward democracy.",
+          countries: ["Taiwan", "China"],
+        },
+        {
+          startYear: 1986,
+          endYear: 1986,
+          graphStartYear: 1990,
+          graphEndYear: 2000,
+          Name: "South Yemen War",
+          Description:
+            "This failed coup d'état stemmed from ideological differences between two factions within the Yemeni Socialist Party.",
+          countries: ["Yemen"],
+        },
+        {
+          startYear: 1989,
+          endYear: 1989,
+          graphStartYear: 1985,
+          graphEndYear: 1995,
+          Name: "Tiananman Square",
+          Description:
+            "On June 4th, 1989, after failing to reach a resolution, the Chinese government sent the army to storm the square with tanks, resulting in the deaths of protesters.",
+          countries: ["China"],
+        },
+        // {
+        //   startYear: 1989,
+        //   endYear: 1989,
+        //   graphStartYear: 1989,
+        //   graphEndYear: 1995,
+        //   Name: "Philippine Coup",
+        //   Description:
+        //     "This was the most serious coup attempt, sparked by corruption, bureaucratic inefficiency, and lenient treatment of communist insurgents.",
+        //   countries: ["Philippines", "United States"],
+        // },
+        {
+          startYear: 1990,
+          endYear: 1990,
+          graphStartYear: 1990,
+          graphEndYear: 2000,
+          Name: "U.S. Invades Panama",
+          Description:
+            "The U.S. invaded Panama to oust the de facto ruler, who was wanted for racketeering and drug trafficking.",
+          countries: ["United States", "Panama"],
+        },
+        // {
+        //   startYear: 1990,
+        //   endYear: 1990,
+        //   graphStartYear: 1990,
+        //   graphEndYear: 2000,
+        //   Name: "German Unification",
+        //   Description:
+        //     "In this year, a divided Germany unified as one independent country, relinquishing control from the allied nations.",
+        //   countries: ["Germany"],
+        // },
+        {
+          startYear: 1990,
+          endYear: 1991,
+          graphStartYear: 1991,
+          graphEndYear: 2001,
+          Name: "The Gulf War",
+          Description:
+            "The conflict arose in response to Iraq's invasion of Kuwait. A coalition of 42 countries, led by the U.S., launched a joint effort to liberate Kuwait in 1991.",
+          countries: ["Iran", "United States", "Kuwait", "Iraq"],
+        },
+        {
+          startYear: 1991,
+          endYear: 1991,
+          graphStartYear: 1991,
+          graphEndYear: 2005,
+          Name: "Soviet Union Collapse",
+          Description:
+            "Amid escalating political turmoil and Gorbachev's waning influence, the Soviet Union collapsed, paving the way for the independence of numerous nations.",
+          countries: [
+            "Russia",
+            "Ukraine",
+            "Georgia",
+            "Azerbaijan",
+            "Armenia",
+            "Estonia",
+            "Latvia",
+            "Lithuania",
+            "Moldova",
+          ],
+        },
+        // {
+        //   startYear: 1995,
+        //   endYear: 1995,
+        //   graphStartYear: 1995,
+        //   graphEndYear: 2005,
+        //   Name: "Bosnian War",
+        //   Description:
+        //     "This war was an internal armed conflict and a significant component of the dissolution of Yugoslavia.",
+        //   countries: ["Bosnia and Herzegovina"],
+        // },
+        // {
+        //   startYear: 1995,
+        //   endYear: 1995,
+        //   graphStartYear: 1990,
+        //   graphEndYear: 2005,
+        //   Name: "Panama's Liberation",
+        //   Description:
+        //     "This year saw the full liberation of Panama, a rare instance of democratization through foreign-imposed regime change.",
+        //   countries: ["United States", "Panama"],
+        // },
+        {
+          startYear: 1998,
+          endYear: 1998,
+          graphStartYear: 1995,
+          graphEndYear: 2010,
+          Name: "A Nuclear Pakistan",
+          Description:
+            "This year, Pakistan conducted five nuclear detonations, abandoning its policy of nuclear ambiguity.",
+          countries: ["United States", "Pakistan", "Israel"],
+        },
+        {
+          startYear: 2001,
+          endYear: 2001,
+          graphStartYear: 2000,
+          graphEndYear: 2020,
+          Name: "9/11",
+          Description:
+            "This tragedy marked the beginning of the War on Terror, prompting multiple world powers to intensify their counterterrorism efforts.",
+          countries: [
+            "United States",
+            "Iraq",
+            "Israel",
+            "United Kingdom",
+            "China",
+            "Japan",
+            "Canada",
+          ],
+        },
+        {
+          startYear: 2003,
+          endYear: 2011,
+          graphStartYear: 2000,
+          graphEndYear: 2020,
+          Name: "Iraq War",
+          Description:
+            "As a component of the War on Terror, the U.S. invasion of Iraq aimed to disarm the country and terminate Saddam Hussein's support for terrorism.",
+          countries: [
+            "Australia",
+            "United States",
+            "United Kingdom",
+            "Iran",
+            "Iraq",
+            "Poland",
+          ],
+        },
+        {
+          startYear: 2003,
+          endYear: 2020,
+          graphStartYear: 2003,
+          graphEndYear: 2020,
+          Name: "War in Darfur",
+          Description:
+            "The war commenced when rebel groups attacked the Sudanese government. In retaliation, the government launched a genocidal campaign targeting all Arabs in the Darfur region.",
+          countries: ["South Sudan", "China", "Iran", "Libya", "Uganda"],
+        },
+        {
+          startYear: 2003,
+          endYear: 2003,
+          graphStartYear: 1998,
+          graphEndYear: 2003,
+          Name: "Second Congo War",
+          Description:
+            "The rebel group capitulated and signed a peace treaty, bringing an end to the war.",
+          countries: [
+            "Congo",
+            "Lybia",
+            "Namibia",
+            "Zimbabew",
+            "South Sudan",
+            "Uganda",
+          ],
+        },
+        {
+          startYear: 2008,
+          endYear: 2008,
+          graphStartYear: 2000,
+          graphEndYear: 2016,
+          Name: "2008 Recession",
+          Description:
+            "One of the most major recessions that affected multiple countries worldwide.",
+          countries: [
+            "United States",
+            "Argentina",
+            "Mexico",
+            "Hungary",
+            "Russia",
+            "Ireland",
+            "Romania",
+            "Jamaica",
+            "China",
+            "Japan",
+            "Brazil",
+            "Peru",
+            "India",
+          ],
+        },
+        {
+          startYear: 2008,
+          endYear: 2008,
+          graphStartYear: 2000,
+          graphEndYear: 2016,
+          Name: "Obama Wins Election",
+          Description:
+            "While advocating strongly for the war on terror, part of his presidency focused on reviewing and reducing military spending.",
+          countries: ["United States", "China"],
+        },
+        {
+          startYear: 2010,
+          endYear: 2012,
+          graphStartYear: 2005,
+          graphEndYear: 2018,
+          Name: "Arab Spring",
+          Description:
+            "The Arab Spring was a series of democratic protests that swept across the Middle East.",
+          countries: ["Tunisia", "Libya", "Yemen", "Syria", "Egypt", "Bahrain"],
+        },
+        {
+          startYear: 2010,
+          endYear: 2010,
+          graphStartYear: 2005,
+          graphEndYear: 2020,
+          Name: "US Leaves Iraq",
+          Description:
+            "As the Iraq war dragged on, public opinion increasingly favored troop withdrawal. George W. Bush subsequently signed an agreement to withdraw all U.S. troops by a specified deadline.",
+          countries: ["Untied States", "Iraq"],
+        },
+        {
+          startYear: 2011,
+          endYear: 2011,
+          graphStartYear: 2005,
+          graphEndYear: 2015,
+          Name: "Iran Nuclear Deal",
+          Description:
+            "This effort aimed to halt Iran's nuclear program and sever all sources enabling Iran to acquire nuclear weapons.",
+          countries: [
+            "Untied States",
+            "Iran",
+            "China",
+            "France",
+            "Germany",
+            "United Kingdom",
+          ],
+        },
+        {
+          startYear: 2016,
+          endYear: 2016,
+          graphStartYear: 2014,
+          graphEndYear: 2022,
+          Name: "Trump wins Election",
+          Description:
+            "This marked the beginning of a new chapter in American foreign policy, emphasizing an 'America First' approach.",
+          countries: ["United States", "Russia", "China"],
+        },
+        {
+          startYear: 2020,
+          endYear: 2020,
+          graphStartYear: 2015,
+          graphEndYear: 2022,
+          Name: "COVID Pandemic",
+          Description:
+            "The COVID-19 pandemic prompted many countries to reassess their military spending priorities, with some reallocating funds towards public health and pandemic response efforts amidst the global crisis.",
+          countries: [
+            "United States",
+            "China",
+            "Russia",
+            "United Kingdom",
+            "Canda",
+            "Japan",
+            "Australia",
+            "German",
+          ],
+        },
+        {
+          startYear: 2020,
+          endYear: 2021,
+          graphStartYear: 2010,
+          graphEndYear: 2022,
+          Name: "U.S. Leaves Afghanistan",
+          Description:
+            "The Trump administration brokered a deal with the Taliban, agreeing to withdraw all NATO forces in exchange for the Taliban's pledge to counter terrorism activities.",
+          countries: ["United States"],
+        },
+        {
+          startYear: 2022,
+          endYear: 2022,
+          graphStartYear: 2019,
+          graphEndYear: 2022,
+          Description:
+            "Putin alleged that Ukraine was being governed by neo-Nazis who purportedly persecuted Russians, thereby challenging Ukraine's legitimacy as a nation.",
+          Name: "Ukraine War",
+          countries: [
+            "United States",
+            "Russia",
+            "Ukraine",
+            "Taiwan",
+            "Germany",
+            "United Kingdom",
+            "Canada",
+            "Netherlands",
+          ],
+        },
+      ];
+
+      document.addEventListener("DOMContentLoaded", function () {
+        var timelineData = {
+          title: {
+            text: {
+              headline: "Global Military Spending Timeline",
+              text: "<p>A detailed look at key events from 1960 to the present.</p>",
+            },
+          },
+          events: events.map((event) => ({
+            start_date: {
+              year: event.startYear,
+              month: event.endYear === event.startYear ? 1 : undefined,
+            },
+            end_date: {
+              year: event.endYear,
+              month: event.endYear === event.startYear ? 12 : undefined,
+            },
+            text: {
+              headline: event.Name,
+              text: `${event.countries.join(", ")} - ${event.Description}`,
+            },
+            unique_id:
+              "ev" +
+              event.startYear +
+              (event.endYear !== event.startYear ? "-" + event.endYear : ""),
+          })),
+        };
+
+        var options = {
+          start_at_end: false,
+          hash_bookmark: false,
+          default_bg_color: { r: 255, g: 255, b: 255 },
+          timenav_position: "bottom",
+          optimal_tick_width: 100,
+          scale_factor: 4,
+        };
+
+        function setCountriesForTimeFrame(startYear) {
+          var timeFrame = timeFrames.find(
+            (frame) => frame.startYear === startYear
+          );
+          if (timeFrame) {
+            var iframe = document.getElementById("graph-iframe");
+            var countryList = timeFrame.countries.join(",");
+
+            iframe.src = `d3graph/graph.html?countries=${encodeURIComponent(
+              countryList
+            )}&startYear=${timeFrame.startYear}&endYear=${timeFrame.endYear}`;
+          }
+        }
+
+        window.timeline = new TL.Timeline("timeline", timelineData, options);
+        window.timeline.on("change", function (e) {
+          var id = e.unique_id.slice(2);
+          var selectedEvent = events.find(
+            (event) =>
+              "ev" +
+                event.startYear +
+                (event.endYear !== event.startYear
+                  ? "-" + event.endYear
+                  : "") ===
+              e.unique_id
+          );
+          if (selectedEvent) {
+            updateIframeWithCountries(
+              selectedEvent.countries,
+              selectedEvent.graphStartYear,
+              selectedEvent.graphEndYear
+            );
+          }
+        });
+
+        function updateIframeWithCountries(
+          countries,
+          graphStartYear,
+          graphEndYear
+        ) {
+          var iframe = document.getElementById("graph-iframe");
+          if (countries && countries.length > 0) {
+            var countryList = countries.join(",");
+            iframe.src = `d3graph/graph.html?countries=${encodeURIComponent(
+              countryList
+            )}&startYear=${graphStartYear}&endYear=${graphEndYear}`;
+          } else {
+            // No specific country value passed, display all countries
+            iframe.src = `d3graph/graph.html?countries=all&startYear=${graphStartYear}&endYear=${graphEndYear}`;
+          }
+        }
+
+        // adding a scroll listener
+        // it just cycles through the index of the iframes
+        // var currentFrameIndex = 0;
+        // window.addEventListener("wheel", function (event) {
+        //     if (event.deltaY > 0) {
+        //         // Scroll down
+        //         currentFrameIndex++;
+        //     } else if (event.deltaY < 0) {
+        //         // Scroll up
+        //         currentFrameIndex--;
+        //     }
+        //     currentFrameIndex =
+        //         (currentFrameIndex + timeFrames.length) % timeFrames.length; // Ensure index wraps around
+        //     var startYear = timeFrames[currentFrameIndex].startYear;
+        //     setCountriesForTimeFrame(startYear);
+        //     //   document.querySelector(`[data-id="${startYear}"]`).click();
+        // });
+      });
+    </script>
+  </body>
+</html>

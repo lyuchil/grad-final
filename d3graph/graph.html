@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>D3.js Graph</title>
+    <link rel="stylesheet" href="../index.css" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+
+  <body>
+    <div id="graph-container" class="svg-container"></div>
+    <input type="hidden" id="country-list" value="" />
+    <input type="hidden" id="startYear" value="" />
+    <input type="hidden" id="endYear" value="" />
+
+    <script>
+      function getQueryStringValue(key) {
+        return decodeURIComponent(
+          window.location.search.replace(
+            new RegExp(
+              "^(?:.*[&\\?]" +
+                encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") +
+                "(?:\\=([^&]*))?)?.*$",
+              "i"
+            ),
+            "$1"
+          )
+        );
+      }
+
+      var countriesQueryString = getQueryStringValue("countries");
+      var countryList = [];
+      if (countriesQueryString) {
+        countryList = countriesQueryString.split(",");
+      }
+
+      // Function to retrieve the start year from the URL query parameters
+      function getStartYear() {
+        return parseInt(getQueryStringValue("startYear"));
+      }
+
+      // Function to retrieve the end year from the URL query parameters
+      function getEndYear() {
+        return parseInt(getQueryStringValue("endYear"));
+      }
+
+      // getting start and end year
+      var startYear = getStartYear();
+      var endYear = getEndYear();
+
+      // if not nan assign them to the hidden values
+      if (!isNaN(startYear) && !isNaN(endYear)) {
+        document.getElementById("startYear").value = startYear;
+        document.getElementById("endYear").value = endYear;
+      }
+
+      //Read the data
+      function createGraph() {
+        //Zero out SVG
+        let graphDiv = document.getElementById("graph-container");
+        graphDiv.innerHTML = "";
+
+        // Get the dimensions of the container element
+        var overallWidth =
+          document.getElementById("graph-container").offsetWidth;
+        var overallHeight =
+          document.getElementById("graph-container").offsetHeight;
+
+        let offsetWidth = overallWidth / 9;
+        let offsetHeight = overallHeight / 15;
+
+        // Set the width and height of the SVG element
+        let svg = d3
+          .select("#graph-container")
+          .append("svg")
+          .attr("width", overallWidth)
+          .attr("height", overallHeight);
+
+        //parse year range
+        let startYear = parseInt(document.getElementById("startYear").value);
+        let endYear = parseInt(document.getElementById("endYear").value);
+        console.log(startYear + " " + endYear);
+        var yearList = [];
+        if (!isNaN(startYear) && !isNaN(endYear)) {
+          yearList.push(startYear);
+          for (let i = startYear + 1; i < endYear; i++) {
+            yearList.push(i);
+          }
+          yearList.push(endYear);
+        }
+
+        console.log(yearList);
+        d3.csv("country-year-output.csv", function (d) {
+          if (
+            (yearList.length === 0 || yearList.includes(+d.Year)) &&
+            (countryList.length === 0 || countryList.includes(d.Country))
+          ) {
+            return {
+              year: d.Year, // Convert to number
+              country: d.Country,
+              militarySpending: d.Military === "" ? NaN : +d.Military, // Convert to number if not empty, NaN otherwise
+              militarySpendingLog:
+                d.Military === "" ? NaN : Math.log10(+d.Military + 1), // Convert to number if not empty, NaN otherwise
+              population: +d.Population, // Convert to number
+            };
+          }
+        }).then(function (data) {
+          // Group data by country
+          const groupedData = d3.group(data, (d) => d.country);
+          // Generate random colors for each country
+          const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+          // Get the keys (country names) from the groupedData
+          const namesArray = Array.from(groupedData.keys());
+
+          // Extract colors corresponding to each country using colorScale
+          const colorsArray = namesArray.map((country) => colorScale(country));
+
+          // Define scales
+          const xScale = d3
+            .scaleLinear()
+            .domain([d3.min(data, (d) => d.year), d3.max(data, (d) => d.year)])
+            .range([offsetWidth, overallWidth - offsetWidth]);
+
+          const yScale = d3
+            .scaleLinear()
+            .domain([0, d3.max(data, (d) => d.militarySpendingLog)])
+            .range([overallHeight - offsetHeight, offsetHeight]);
+
+          // Define line generator
+          const line = d3
+            .line()
+            .x((d) => xScale(d.year))
+            .y((d) => yScale(d.militarySpendingLog))
+            .defined(function (d) {
+              return !isNaN(d.militarySpendingLog);
+            }); // Exclude points with null y-values
+
+          // Plot data points for each country
+          groupedData.forEach((countryData, country) => {
+            const color = colorScale(country); // Get random color for the country
+
+            // Append path element for the line
+            svg
+              .append("path")
+              .datum(countryData)
+              .attr("fill", "none")
+              .attr("class", "line")
+              .attr("d", line)
+              .style("stroke", color);
+          });
+
+          var data = colorsArray.map((color, index) => ({
+            color: color,
+            name: namesArray[index],
+          }));
+
+          // Append a group element for the legend
+          var legend = svg
+            .append("g")
+            .attr("class", "legend")
+            .attr(
+              "transform",
+              `translate(${overallWidth - offsetWidth},${overallHeight / 2})`
+            );
+
+          // Bind data to create legend items
+          var legendItems = legend
+            .selectAll(".legend-item")
+            .data(data)
+            .enter()
+            .append("g")
+            .attr("class", "legend-item")
+            .attr("transform", function (d, i) {
+              return "translate(0," + i * 20 + ")";
+            });
+
+          // Append colored rectangles
+          legendItems
+            .append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", 10)
+            .attr("height", 10)
+            .style("fill", function (d) {
+              return d.color;
+            });
+
+          // Append country names
+          legendItems
+            .append("text")
+            .attr("x", 20)
+            .attr("y", 10)
+            .attr("dy", "0.35em")
+            .text(function (d) {
+              return d.name;
+            });
+
+          //Add axes
+          svg
+            .append("g")
+            .attr("transform", `translate(0,${overallHeight - offsetHeight})`)
+            .call(d3.axisBottom(xScale).ticks(5).tickFormat(d3.format("")));
+
+          svg
+            .append("g")
+            .attr("transform", `translate(${offsetWidth},0)`)
+            .call(d3.axisLeft(yScale));
+
+          // Add labels
+          svg
+            .append("text")
+            .attr(
+              "transform",
+              `translate(${overallWidth / 2},${
+                overallHeight - offsetHeight / 20
+              })`
+            )
+            .text("Year");
+
+          svg
+            .append("text")
+            .attr(
+              "transform",
+              `translate(${offsetWidth / 4},${
+                overallHeight / 2 + offsetHeight
+              }) rotate(-90)`
+            )
+            .text("Military Spending in $ (Log Base 10)");
+        });
+      }
+
+      createGraph();
+
+      window.addEventListener(
+        "message",
+        function (event) {
+          if (event.origin !== window.location.origin) {
+            return;
+          }
+
+          if (event.data.type === "UPDATE_COUNTRIES") {
+            const newCountries = event.data.countries;
+            document.getElementById("country-list").value =
+              newCountries.join(",");
+            createGraph();
+          }
+        },
+        false
+      );
+
+      // Listen for the scroll event
+      window.addEventListener("resize", function () {
+        // Call the redraw function when the scroll event occurs
+        createGraph();
+      });
+    </script>
+  </body>
+</html>
