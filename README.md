@@ -18,9 +18,9 @@ https://youtu.be/tPOfx_W3Pfs
 
 ### File Breakdown
 
-Data - This is the folder that contains the raw and cleaned data CSVs for militray spending and world population
-Data Processing Scripits - This folder has all of our Python scripts used for cleaning and sorting the dataset
-d3graph - This folder has a graph.html file inside is used for dynamically changing the graph displaying the timeline with the final version of the dataset
-graphOutputs - This folder has some leftover testing graphs and datasets we used during analysis
-index.css - File for styling the website
-index.html - The main file for controlling what graph is dispalyed and controls the timeline
+- Data - This is the folder that contains the raw and cleaned data CSVs for militray spending and world population
+- Data Processing Scripits - This folder has all of our Python scripts used for cleaning and sorting the dataset
+- d3graph - This folder has a graph.html file inside is used for dynamically changing the graph displaying the timeline with the final version of the dataset
+- graphOutputs - This folder has some leftover testing graphs and datasets we used during analysis
+- index.css - File for styling the website
+- index.html - The main file for controlling what graph is dispalyed and controls the timeline
